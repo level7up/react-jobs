@@ -1,10 +1,24 @@
-/** @format */
-
 import React from 'react';
-import db from '../jobs.json';
+import {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 import JobCard from './JobCard';
-const JobListing = () => {
-	const recentJobs = db.jobs.slice(0,3);
+const JobListing = ({jobCount = 3}) => {
+	const [jobs, setJobs] = useState([]);
+	const [loading, setLoading] = useState(true);
+	useEffect(()=>{
+		const fetchJobs = async ()=>{
+			try {
+				const res = await fetch('http://localhost:8000/jobs')
+				const data =await res.json();
+				setJobs(data);
+			} catch (error) {
+				console.error('error fetching data ',error);
+			} finally{
+				setLoading(false);
+			}
+		}
+		fetchJobs();
+	});
 	return (
 		<>
 			<section className='bg-blue-50 px-4 py-10'>
@@ -13,19 +27,21 @@ const JobListing = () => {
 						Browse Jobs
 					</h2>
 					<div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-						{recentJobs.map((job) => (
-							<JobCard  job={job} key={job.id}/>
-						))}
+						{
+							loading
+								? (<h2>Loading ...</h2>)
+								: (<>{jobs.map((job) => (<JobCard  job={job} key={job.id}/>))}</>)
+						}
 					</div>
 				</div>
 			</section>
 			<section className='m-auto max-w-lg my-10 px-6'>
-				<a
-					href='jobs.html'
+				<Link
+					to='/jobs'
 					className='block bg-black text-white text-center py-4 px-6 rounded-xl hover:bg-gray-700'
 				>
 					View All Jobs
-				</a>
+				</Link>
 			</section>
 		</>
 	);
