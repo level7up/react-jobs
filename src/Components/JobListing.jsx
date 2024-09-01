@@ -2,6 +2,7 @@ import React from 'react';
 import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import JobCard from './JobCard';
+import Spinner from './Spinner';
 const JobListing = ({jobCount = 3}) => {
 	const [jobs, setJobs] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -26,13 +27,12 @@ const JobListing = ({jobCount = 3}) => {
 					<h2 className='text-3xl font-bold text-indigo-500 mb-6 text-center'>
 						Browse Jobs
 					</h2>
-					<div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
 						{
 							loading
-								? (<h2>Loading ...</h2>)
-								: (<>{jobs.map((job) => (<JobCard  job={job} key={job.id}/>))}</>)
+								? (<Spinner loading={loading}/>)
+								: (<div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+									{jobs.map((job) => (<JobCard  job={job} key={job.id}/>))}</div>)
 						}
-					</div>
 				</div>
 			</section>
 			<section className='m-auto max-w-lg my-10 px-6'>
